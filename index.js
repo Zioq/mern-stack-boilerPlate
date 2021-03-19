@@ -6,9 +6,22 @@ const app = express();
 const port = 5000;
 // Connet Mongoose
 const mongoose = require("mongoose");
+// Get the body-parser module
+const bodyParser = require("body-parser");
+
+const config = require("./config/key");
+
+//Application/x--www-form-urlencded
+app.use(bodyParser.urlencoded({extended:true}));
+//Application/josn
+app.use(bodyParser.json());
+
+// Get the Models
+const { User } =require("./models/User");
+
 
 mongoose.connect(
-    "mongodb+srv://RobertHan:1q2w3e!!@react-blog.jsloa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    config.MONGO_URI,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -21,6 +34,21 @@ mongoose.connect(
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.post("/register", (req,res) => {
+
+    const user = new User(req.body);
+
+    user.save((err,userInfo) => {
+        
+        // send a response
+        if (err) return res.json({success:false, err});
+        return res.status(200).json({
+            success:true,
+        })
+    })
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
