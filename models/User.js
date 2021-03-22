@@ -26,8 +26,6 @@ const userSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  image: String,
-
   //Manage validation using a token
   token: {
     type: String,
@@ -78,6 +76,23 @@ userSchema.methods.generateToken = function (cb) {
       cb(null, user);
   });
 };
+
+userSchema.statics.findByToken = function(token, cb) {
+    var user = this;
+
+    // Decode a token
+    jwt.verify(token, 'secretToken', function(err,decoded) {
+        // Find a user using a USER.ID
+        // compare the token which comes from client with the token which saved in DB
+        user.findOne({"_id": decoded, "token": token}, function(err, user) {
+            if(err) return cb(err);
+            cb(null, user);
+        })
+        
+
+    })
+
+}
 
 // Wrap the userSchema with a Model
 const User = mongoose.model("User", userSchema);
