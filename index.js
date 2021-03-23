@@ -16,6 +16,9 @@ const config = require("./config/key");
 app.use(bodyParser.urlencoded({ extended: true }));
 //Application/josn
 app.use(bodyParser.json());
+//CookieParser
+app.use(cookieParser());
+
 
 // Get the Models
 const { User } = require("./models/User");
