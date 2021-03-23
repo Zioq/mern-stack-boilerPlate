@@ -56,8 +56,8 @@ userSchema.pre("save", function (next) {
   }
 });
 
-//Methods
-userSchema.methods.comparePassword = (plainPassword, cb) =>{
+//Methods (Don't use Arrow function. Just write down 'function' in front of parameters)
+userSchema.methods.comparePassword = function  (plainPassword, cb) {
   bcrypt.compare(plainPassword, this.password, (err, isMatch) =>{
     if (err) return cb(err);
     cb(null, isMatch);

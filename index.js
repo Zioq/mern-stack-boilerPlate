@@ -19,7 +19,6 @@ app.use(bodyParser.json());
 //CookieParser
 app.use(cookieParser());
 
-
 // Get the Models
 const { User } = require("./models/User");
 const { auth } = require("./middleware/auth");
@@ -95,6 +94,15 @@ app.post("/api/users/auth", auth, (req, res) => {
     email: req.user.email,
     name: req.user.name,
     role: req.user.role,
+  });
+});
+
+app.get("/api/users/logout", auth, (req, res) => {
+  User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
+    if (err) return res.json({ success: false, err });
+    res.status(200).json({
+      success: true,
+    });
   });
 });
 
