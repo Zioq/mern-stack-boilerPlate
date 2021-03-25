@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -8,6 +8,15 @@ import {loginUser} from "../../../_actions/user_action";
 function LoginPage(props) {
 
   const dispatch = useDispatch();
+  const rememberMeChecked = localStorage.getItem("rememberMe") ? false : true;
+  const [rememberMe, setRememberMe] = useState(rememberMeChecked)
+
+  const handleRememberMe = () => {
+    setRememberMe(!rememberMe)
+    console.log(rememberMe);
+  };
+
+  const initialEmail = localStorage.getItem("rememberMe") ? localStorage.getItem("rememberMe") : '';
 
   const onSubmitHandler = (values: any) => {
     //console.log("Received values of form: ", values)
@@ -23,7 +32,14 @@ function LoginPage(props) {
     dispatch(loginUser(body))
           .then(response => {
             if(response.payload.loginSuccess) {
+              window.localStorage.setItem("userId", response.payload.userId);
+              if(rememberMeChecked === true) {
+                window.localStorage.setItem('rememberMe', values.email);
+              } else {
+                localStorage.removeItem('rememberMe');
+              }
               props.history.push("/")
+              console.log("After")
             } else {
               alert(response.payload.message)
             }
@@ -44,7 +60,7 @@ function LoginPage(props) {
       <Form
         name="normal_login"
         className="login-form"
-        initialValues={{ remember: true }}
+        initialValues={{ remember: true}}
         onFinish={onSubmitHandler}
       >
         <Form.Item
@@ -62,7 +78,7 @@ function LoginPage(props) {
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="email"
+            placeholder="email" 
           />
         </Form.Item>
         <Form.Item
@@ -77,7 +93,7 @@ function LoginPage(props) {
         </Form.Item>
         <Form.Item>
           <Form.Item name="remember" valuePropName="checked" noStyle>
-            <Checkbox>Remember me</Checkbox>
+            <Checkbox onChange={handleRememberMe} checked={rememberMe}>Remember me</Checkbox>
           </Form.Item>
 
           <a className="login-form-forgot" href="">
