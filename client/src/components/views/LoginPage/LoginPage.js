@@ -1,16 +1,34 @@
-import React, { useRef } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { Form, Input, Button, Checkbox } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import axios from "axios";
+import {useDispatch}  from "react-redux";
+import {loginUser} from "../../../_actions/user_action";
 
+function LoginPage(props) {
 
-function LoginPage() {
-  const { register, watch, errors, handleSubmit } = useForm();
+  const dispatch = useDispatch();
 
-  const password = useRef();
-  password.current = watch("password");
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmitHandler = (values: any) => {
+    //console.log("Received values of form: ", values)
+    /* console.log("Eamil",values.email)
+    console.log("password",values.password) */
+    let body = {
+      email: values.email,
+      password: values.password
+    }
 
-    // enter post request with axios
+    // Dispatch user-login Body
+    // loginUser: redux-action
+    dispatch(loginUser(body))
+          .then(response => {
+            if(response.payload.loginSuccess) {
+              props.history.push("/")
+            } else {
+              alert(response.payload.message)
+            }
+          })
+
   };
 
   return (
@@ -23,55 +41,61 @@ function LoginPage() {
         height: "100vh",
       }}
     >
-      <form onSubmit={handleSubmit(onSubmit)} style={{display:'flex', flexDirection:'column'}}>
-        <label>Email</label>
-        <input
+      <Form
+        name="normal_login"
+        className="login-form"
+        initialValues={{ remember: true }}
+        onFinish={onSubmitHandler}
+      >
+        <Form.Item
           name="email"
-          type="email"
-          ref={register({ required: true, pattern: /^\S+@\S+$/i })}
-        />
-        {errors.email && <p>This email field is required</p>}
-
-        <label>Name</label>
-        <input name="name" ref={register({ required: true, maxLength: 20 })} />
-        {errors.name && errors.name.type === "required" && (
-          <p>This name field is required</p>
-        )}
-        {errors.name && errors.name.type === "maxLength" && (
-          <p>Your input exceed maximum lenght(10)</p>
-        )}
-        <label>Password</label>
-        <input
+          rules={[
+            {
+              type: "email",
+              message: "The input is not valid E-mail!",
+            },
+            {
+              required: true,
+              message: "Please input your E-mail!",
+            },
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="email"
+          />
+        </Form.Item>
+        <Form.Item
           name="password"
-          type="password"
-          ref={register({ required: true, minLenght: 6 })}
-        />
-        {errors.password && errors.password.type === "required" && (
-          <p>This name field is required</p>
-        )}
-        {errors.password && errors.password.type === "minLenght" && (
-          <p>Your should enter more than 6 characters for password</p>
-        )}
+          rules={[{ required: true, message: "Please input your Password!" }]}
+        >
+          <Input
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Item>
+        <Form.Item>
+          <Form.Item name="remember" valuePropName="checked" noStyle>
+            <Checkbox>Remember me</Checkbox>
+          </Form.Item>
 
-        <label>Password Confirm</label>
-        <input
-          name="password_confirm"
-          type="password"
-          ref={register({
-            required: true,
-            validate: (value) => value === password.current,
-          })}
-        />
-        {errors.password_confirm &&
-          errors.password_confirm.type === "required" && (
-            <p>This name field is required</p>
-          )}
-        {errors.password_confirm &&
-          errors.password_confirm.type === "validate" && (
-            <p>The password does not match</p>
-          )}
-        <input type="submit" />
-      </form>
+          <a className="login-form-forgot" href="">
+            Forgot password?
+          </a>
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="login-form-button"
+          >
+            Log in
+          </Button>
+          Or <a href="">register now!</a>
+        </Form.Item>
+      </Form>
     </div>
   );
 }
