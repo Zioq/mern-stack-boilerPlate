@@ -1,7 +1,6 @@
 import React,{useState} from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import axios from "axios";
 import {useDispatch}  from "react-redux";
 import {loginUser} from "../../../_actions/user_action";
 
@@ -38,8 +37,7 @@ function LoginPage(props) {
               } else {
                 localStorage.removeItem('rememberMe');
               }
-              props.history.push("/")
-              console.log("After")
+              props.history.push("/");
             } else {
               alert(response.payload.message)
             }
@@ -109,7 +107,7 @@ function LoginPage(props) {
           >
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <a href="/register">register now!</a>
         </Form.Item>
       </Form>
     </div>
