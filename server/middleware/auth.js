@@ -9,7 +9,7 @@ let auth = (req, res, next) => {
   User.findByToken(token, (err, user) => {
     if (err) throw err;
     // If there is no user, authentication process fail
-    if (!user) return res.json({ isAuth: true, error: true });
+    if (!user) return res.json({ isAuth: false, error: true });
 
     // If user exists, authentication process success
     req.token = token;

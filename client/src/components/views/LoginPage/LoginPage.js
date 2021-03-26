@@ -3,7 +3,7 @@ import { Form, Input, Button, Checkbox } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import {useDispatch}  from "react-redux";
 import {loginUser} from "../../../_actions/user_action";
-
+import {withRouter} from "react-router-dom"
 function LoginPage(props) {
 
   const dispatch = useDispatch();
@@ -94,9 +94,7 @@ function LoginPage(props) {
             <Checkbox onChange={handleRememberMe} checked={rememberMe}>Remember me</Checkbox>
           </Form.Item>
 
-          <a className="login-form-forgot" href="">
-            Forgot password?
-          </a>
+          
         </Form.Item>
 
         <Form.Item>
@@ -114,4 +112,4 @@ function LoginPage(props) {
   );
 }
 
-export default LoginPage;
+export default withRouter(LoginPage);

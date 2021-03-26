@@ -84,7 +84,7 @@ app.post("/api/users/login", (req, res) => {
 });
 
 // Auth Router
-app.post("/api/users/auth", auth, (req, res) => {
+app.get("/api/users/auth", auth, (req, res) => {
   //Use an 'auth' middleware to valid authentication
 
   // After process of pass the auth
@@ -93,7 +93,8 @@ app.post("/api/users/auth", auth, (req, res) => {
     isAdmin: req.user.role === 0 ? false : true,
     isAuth: true,
     email: req.user.email,
-    name: req.user.name,
+    firstname: req.user.firstname,
+    lastname: req.user.lastname,
     role: req.user.role,
   });
 });
